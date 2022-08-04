@@ -25,17 +25,24 @@ public class Result<T> {
      * 成功
      */
     public static <T> Result<T> success(T data) {
-        Result<T> result = new Result<T>();
+        Result<T> result = new Result<>();
         result.setCode(ResultEnum.SUCCESS.getCode());
         result.setMessage(ResultEnum.SUCCESS.getMessage());
         result.setData(data);
         return result;
     }
 
-    /**
-     * 失败
-     */
-    public static <T> Result<T> error(int code, String message) {
-        return new Result(code, message);
+    public static <T> Result<T> success(String message) {
+        Result<T> result = new Result<>();
+        result.setCode(ResultEnum.SUCCESS.getCode());
+        result.setMessage(ResultEnum.SUCCESS.getMessage());
+        return result;
+    }
+
+    public static <T> Result<T> fail() {
+        Result<T> result = new Result<>();
+        result.setCode(ResultEnum.FAIL.getCode());
+        result.setMessage(ResultEnum.FAIL.getMessage());
+        return result;
     }
 }

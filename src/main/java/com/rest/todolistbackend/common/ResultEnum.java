@@ -1,23 +1,19 @@
 package com.rest.todolistbackend.common;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public enum ResultEnum {
 
-    SUCCESS(200, "成功"),
-    FAIL(400, "失败"),
-    SERVER_ERROR(500, "服务器异常");
-    private int code;
+    SUCCESS(200, "success"),
+    FAIL(400, "fail"),
+    NOT_FOUND(404,"not found"),
+    SERVER_ERROR(500, "server error");
+    private Integer code;
     private String message;
-
-    ResultEnum(int code, String message) {
-        this.code = code;
-        this.message = message;
-    }
-
-    public int getCode() {
-        return this.code;
-    }
-
-    public String getMessage() {
-        return this.message;
-    }
 }
