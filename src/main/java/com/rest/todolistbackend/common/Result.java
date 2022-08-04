@@ -21,6 +21,26 @@ public class Result<T> {
         this.message = message;
     }
 
+    public Result data(T data){
+        this.setData(data);
+        return this;
+    }
+
+    public Result code(int code){
+        this.setCode(code);
+        return this;
+    }
+
+    public Result code(ResultEnum code){
+        this.setCode(code.getCode());
+        return this;
+    }
+
+    public Result msg(String msg){
+        this.setMessage(msg);
+        return this;
+    }
+
     /**
      * 成功
      */
@@ -32,12 +52,13 @@ public class Result<T> {
         return result;
     }
 
-    public static <T> Result<T> success(String message) {
-        Result<T> result = new Result<>();
+    public static Result success() {
+        Result result = new Result<>();
         result.setCode(ResultEnum.SUCCESS.getCode());
         result.setMessage(ResultEnum.SUCCESS.getMessage());
         return result;
     }
+
 
     public static <T> Result<T> fail() {
         Result<T> result = new Result<>();
