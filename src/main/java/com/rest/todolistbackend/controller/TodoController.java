@@ -13,7 +13,7 @@ import java.util.List;
 
 @CrossOrigin
 @RestController
-@RequestMapping("/todo")
+@RequestMapping("/todos")
 public class TodoController {
 
     @Autowired
@@ -38,13 +38,13 @@ public class TodoController {
     @PutMapping("/{id}")
     public Result updateTodos(@PathVariable Integer id,@RequestBody TodoVO todoVO){
         Todo todos = todoService.updateTodo(id, todoMapper.toEntity(todoVO));
+        System.out.println(todos.toString());
         return Result.success(todos);
     }
 
     @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
     public Result deleteTodos(@PathVariable Integer id){
         todoService.deleteTodo(id);
-        return Result.success("删除成功");
+        return Result.success(id);
     }
 }
