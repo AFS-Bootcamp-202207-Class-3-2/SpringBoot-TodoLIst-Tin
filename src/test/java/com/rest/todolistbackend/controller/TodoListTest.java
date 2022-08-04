@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -17,7 +18,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -45,7 +49,7 @@ public class TodoListTest {
     }
 
     @Test
-    void should_get_all_TodoL_when_perform_get() throws Exception {
+    void should_get_all_Todo_when_perform_get() throws Exception {
         //given
         todoRepository.saveAll(getTodoList());
         //when
@@ -53,6 +57,26 @@ public class TodoListTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data", Matchers.hasSize(3)))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data[*].text",containsInAnyOrder("testA","testB","testC")));
-        //then
+    }
+
+    @Test
+    void should_create_Todo_when_perform_post_given_a_todo() throws Exception {
+        //given
+        String newTodo = "{\n" +
+                "\"text\":\"testA\"" +
+                "}";
+        //when
+        client.perform(MockMvcRequestBuilders.post("/todos")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(newTodo))
+                .andExpect(MockMvcResultMatchers.status().isCreated())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.id").isNumber())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.text").value("testA"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.done").value(false));
+
+        List<Todo> todos = todoRepository.findAll();
+        assertThat(todos, hasSize(1));
+        assertThat(todos.get(0).getText(), equalTo("testA"));
+        assertThat(todos.get(0).getDone(), equalTo(false));
     }
 }
