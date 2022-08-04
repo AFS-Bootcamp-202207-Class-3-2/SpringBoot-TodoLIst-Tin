@@ -89,7 +89,7 @@ public class TodoListTest {
                 "}";
         Todo todo = todoRepository.save(new Todo(null, "Apple", false, new Date(), new Date()));
         //when
-        client.perform(MockMvcRequestBuilders.put("/todos/"+todo.getId())
+        client.perform(MockMvcRequestBuilders.put("/todos/{id}",todo.getId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(updateTodo))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.id").isNumber())
@@ -100,5 +100,19 @@ public class TodoListTest {
         assertThat(todos, hasSize(1));
         assertThat(todos.get(0).getText(), equalTo("testA"));
         assertThat(todos.get(0).getDone(), equalTo(true));
+    }
+
+    @Test
+    void should_delete_Todo_when_perform_delete_given_a_id() throws Exception {
+        //given
+        Todo todo = todoRepository.save(new Todo(null, "Apple", false, new Date(), new Date()));
+
+        //when
+        client.perform(MockMvcRequestBuilders.delete("/todos/{id}",todo.getId()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data").isNumber());
+
+        //then
+        List<Todo> todos = todoRepository.findAll();
+        assertThat(todos, hasSize(0));
     }
 }
