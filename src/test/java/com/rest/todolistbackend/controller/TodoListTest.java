@@ -79,4 +79,26 @@ public class TodoListTest {
         assertThat(todos.get(0).getText(), equalTo("testA"));
         assertThat(todos.get(0).getDone(), equalTo(false));
     }
+
+    @Test
+    void should_update_Todo_when_perform_put_given_a_todo() throws Exception {
+        //given
+        String updateTodo = "{\n" +
+                "    \"text\":\"testA\",\n" +
+                "    \"done\":true" +
+                "}";
+        Todo todo = todoRepository.save(new Todo(null, "Apple", false, new Date(), new Date()));
+        //when
+        client.perform(MockMvcRequestBuilders.put("/todos/"+todo.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(updateTodo))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.id").isNumber())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.text").value("testA"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.done").value(true));
+
+        List<Todo> todos = todoRepository.findAll();
+        assertThat(todos, hasSize(1));
+        assertThat(todos.get(0).getText(), equalTo("testA"));
+        assertThat(todos.get(0).getDone(), equalTo(true));
+    }
 }
